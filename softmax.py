@@ -66,14 +66,13 @@ def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
     c = 0
     
     # Compute probabilities with previous function (k,n)
-    p = compute_probabilities(X, theta, temp_parameter)
+    p = np.clip(compute_probabilities(X, theta, temp_parameter), 1e-15, 1-1e-15)
     
     # Loop through datapoints to calculate first term
     for i in range(X.shape[0]): # Loop through rows
-        for l in range(X.shape[1]): # Loop through columns
-            for j in range(theta.shape[0]): # Loop through thetas for each class
-                if Y[i] == j:
-                    c += np.log(p[j, i])
+        for j in range(theta.shape[0]): # Loop through thetas
+            if Y[i] == j:
+                c += np.log(p[j, i])
     
     # Complete calculation for first term
     c = -(1 / X.shape[0]) * c
@@ -84,7 +83,6 @@ def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
     return c
     
     raise NotImplementedError
-
 
 
 def run_gradient_descent_iteration(X, Y, theta, alpha, lambda_factor, temp_parameter):
@@ -132,7 +130,11 @@ def update_y(train_y, test_y):
         test_y_mod3 - (n, ) NumPy array containing the new labels (a number between 0-2)
                     for each datapoint in the test set
     """
-    #YOUR CODE HERE
+    
+    train_y_mod3 = train_y % 3
+    test_y_mod3 = test_y % 3
+    
+    return train_y_mod3, test_y_mod3
     raise NotImplementedError
 
 def compute_test_error_mod3(X, Y, theta, temp_parameter):
@@ -150,7 +152,10 @@ def compute_test_error_mod3(X, Y, theta, temp_parameter):
     Returns:
         test_error - the error rate of the classifier (scalar)
     """
-    #YOUR CODE HERE
+    Yp = get_classification(X, theta, temp_parameter)
+    Yp = Yp % 3
+    
+    return 1 - np.mean(Y == Yp)
     raise NotImplementedError
 
 def softmax_regression(X, Y, temp_parameter, alpha, lambda_factor, k, num_iterations):

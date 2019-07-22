@@ -12,8 +12,6 @@ def project_onto_PC(X, pcs, n_components):
 
     raise NotImplementedError
 
-
-
 ### Functions which are already complete, for you to use ###
 
 def cubic_features(X):
