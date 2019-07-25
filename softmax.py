@@ -62,25 +62,20 @@ def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
     Returns
         c - the cost value (scalar)
     """
-    # Initialize cost
-    c = 0
+    # Set n
+    n = X.shape[0]
     
-    # Compute probabilities with previous function (k,n)
+    # Compute probabilities with previous function (a (k,n) matrix)
     p = np.clip(compute_probabilities(X, theta, temp_parameter), 1e-15, 1-1e-15)
     
-    # Loop through datapoints to calculate first term
-    for i in range(X.shape[0]): # Loop through rows
-        for j in range(theta.shape[0]): # Loop through thetas
-            if Y[i] == j:
-                c += np.log(p[j, i])
+    # Pick out the appropriate probabilities from p (probabilities corresponding to the correct label)
+    p_true = np.choose(Y, p)
+    non_regularized_cost = -(1 / n) * np.sum(np.log(p_true)) # Compute first term
     
-    # Complete calculation for first term
-    c = -(1 / X.shape[0]) * c
+    # Compute second term
+    regularized_cost = 0.5 * lambda_factor * (np.sum(theta ** 2))
     
-    # Compute second term and add to c
-    c += 0.5 * lambda_factor * (np.sum(theta ** 2))
-    
-    return c
+    return non_regularized_cost + regularized_cost
     
     raise NotImplementedError
 
